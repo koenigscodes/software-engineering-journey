@@ -23,3 +23,36 @@
   }
   <!-- #Argument -->
   An argument is the actual value you pass into the function.
+
+  // Too few arguments
+  function greet(name) {}
+  greet();
+
+  JavaScript says: "Missing argument? I'll use undefined."
+
+  // Too many arguments
+  function greet(name) {}
+
+  greet("Jordan", 25, true);
+
+  JavaScript says: "Extra arguments? I'll ignore them."
+
+  <!-- Rest Params -->
+  function sum(...numbers) {
+    console.log(numbers);
+  }
+
+  sum(10, 20, 30, 40);
+
+  The rest operator (...) collects any number of arguments into a single array, allowing a function to accept a variable number of arguments.
+  Rest parameters collect arguments into an array so you can immediately use all the powerful array methods on them.
+
+  The Rule
+  The rest parameter must always be last. This is valid:
+  function show(first, second, ...rest) {}
+
+  *This is NOT valid:
+  function show(...rest, last) {}
+  Why? Because JavaScript wouldn't know where to stop collecting arguments for rest.
+
+  A return inside a loop ends both the loop and the entire function immediately.
