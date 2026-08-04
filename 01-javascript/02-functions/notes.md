@@ -56,3 +56,46 @@
   Why? Because JavaScript wouldn't know where to stop collecting arguments for rest.
 
   A return inside a loop ends both the loop and the entire function immediately.
+
+  <!-- Array Methods & Higher-Order Functions -->
+  A higher-order function is a function that:
+  Accepts one or more functions as arguments, or
+  Returns a function.
+
+  <!-- map() -->
+  numbers = [2, 4, 6]
+  const result = numbers.map(num => num + 1);
+  result  = [3, 5, 7]
+The original array is untouched.
+That's one of the reasons map() is so popular in modern JavaScript and React—it creates a new array instead of modifying the existing one.
+map() doesn't care what type it returns.
+It can transform:
+String → Number ✅
+Number → String ✅
+Object → String ✅
+Number → Boolean ✅
+Anything → Anything ✅
+
+That's why it's incredibly powerful.
+
+<!-- find() -->
+const product = products.find(item => item.id === 2);
+console.log(product);
+
+find() stops when the callback returns true for the first time, and it returns the corresponding element.
+
+<!-- some() -->
+Think of some() as asking:
+"Does ANYONE qualify?"
+The moment it finds one match..
+
+<!-- every() -->
+every() keeps checking until it finds one failure.
+
+const scores = [80, 95, 72, 88];
+const passed = scores.every(score => score >= 50);
+console.log(passed);
+
+*map() → Transform every element.
+*filter() → Keep elements that match a condition.
+*find() → "Give me the first thing that matches."

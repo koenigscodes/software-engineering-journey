@@ -9,3 +9,25 @@ sayHi();
 const sayHi = function () {
     console.log("Hi");
 };
+// default params
+function greet(name = "Guest") {
+    return `Hello ${name}`;
+}
+
+console.log(greet());
+console.log(greet("Jordan"));
+
+// find()
+const users = [
+  { name: "Jordan", active: false },
+  { name: "Peter", active: false },
+  { name: "Mary", active: true },
+  { name: "Alex", active: true }
+];
+const result = users.find(user => user.active);
+console.log(result);
+
+// some()
+const numbers = [1, 3, 5, 8, 9];
+const result = numbers.some(num => num % 2 === 0);
+console.log(result);

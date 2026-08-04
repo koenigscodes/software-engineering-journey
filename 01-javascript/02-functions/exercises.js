@@ -20,3 +20,52 @@ console.log(answer);
 }
 
   console.log(sum(10, 20, 30, 40));
+
+  // Higher Order Functions
+  function greet() {
+    console.log("Hello");
+  }
+
+  function execute(fn) {
+    fn();
+  }
+
+  execute(greet);
+
+  // map()
+  const numbers = [2, 4, 6];
+  const result = numbers.map(num => num + 1);
+  console.log(result);
+
+  const numbers = [1, 2, 3];
+  const result = numbers.map(num => num * 10);
+  console.log(result);
+
+  const numbers = [1, 2, 3, 4, 5];
+
+const result = numbers
+  .filter(num => num % 2 === 1)
+  .map(num => num * 10);
+
+  console.log(result);
+
+  const users = [
+  { name: "Jordan", active: true },
+  { name: "Peter", active: false },
+  { name: "Mary", active: true },
+  { name: "Alex", active: false }
+];
+
+const result = users
+  .filter(user => user.active)
+  .map(user => user.name);
+
+console.log(result);
+
+const numbers = [5, 10, 15, 20, 25];
+const result = numbers.find(num => num > 12);
+console.log(result);
+
+const ages = [22, 19, 17, 25];
+const result = ages.every(age => age >= 18);
+console.log(result);
