@@ -69,3 +69,22 @@ console.log(result);
 const ages = [22, 19, 17, 25];
 const result = ages.every(age => age >= 18);
 console.log(result);
+
+// reduce()
+const words = ["I", "love", "JavaScript"];
+const sentence = words.reduce(
+  (text, word) => text + " " + word,
+  ""
+);
+console.log(sentence);
+
+const orders = [
+  { total: 100 },
+  { total: 250 },
+  { total: 75 }
+];
+const revenue = orders.reduce(
+  (sum, order) => sum + order.total,
+  0
+);
+console.log(revenue);

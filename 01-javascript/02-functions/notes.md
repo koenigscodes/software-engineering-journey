@@ -96,6 +96,15 @@ const scores = [80, 95, 72, 88];
 const passed = scores.every(score => score >= 50);
 console.log(passed);
 
-*map() → Transform every element.
-*filter() → Keep elements that match a condition.
-*find() → "Give me the first thing that matches."
+<!-- reduce() -->
+const numbers = [10, 20, 30, 40];
+const total = numbers.reduce((sum, num) => sum + num, 0);
+That 0 is the starting value of sum. sum is the running total (or accumulator). It stores the result from the previous iteration and carries it into the next one.
+
+
+map()	Transform every element	New array
+filter()	Keep matching elements	New array
+find()	Get the first matching element	Element or undefined
+some()	Check if at least one matches	Boolean
+every()	Check if all match	Boolean
+reduce()	Combine many values into one	Any value (number, string, object, array, etc.)

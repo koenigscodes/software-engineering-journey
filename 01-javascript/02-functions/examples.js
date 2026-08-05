@@ -31,3 +31,18 @@ console.log(result);
 const numbers = [1, 3, 5, 8, 9];
 const result = numbers.some(num => num % 2 === 0);
 console.log(result);
+
+// reduce()
+const numbers = [2, 4, 6];
+
+const result = numbers.reduce(
+  (sum, num) => sum + num,
+  0
+);
+
+const words = ["I", "love", "JavaScript"];
+const sentence = words.reduce(
+  (text, word) => text + " " + word,
+  ""
+);
+console.log(sentence);
