@@ -108,3 +108,63 @@ find()	Get the first matching element	Element or undefined
 some()	Check if at least one matches	Boolean
 every()	Check if all match	Boolean
 reduce()	Combine many values into one	Any value (number, string, object, array, etc.)
+
+<!-- Destructuring -->
+const car = {
+  brand: "Toyota",
+  year: 2022,
+  color: "Black"
+};
+const { brand, year } = car;
+console.log(brand);
+console.log(year);
+
+const car = {
+  brand: "Toyota"
+};
+const {
+  brand,
+  year = 2024,
+  color = "Black"
+} = car;
+brand → "Toyota"
+year → 2024   (default used)
+color → "Black" (default used)
+
+const user = {
+  name: "Jordan",
+  age: 25
+};
+const { name: userName } = user;
+console.log(userName);
+It means:
+
+"Take the name property and store it in a variable called userName."
+It's equivalent to writing:
+const userName = user.name;
+
+/
+<!-- Array destructuring -->
+const fruits = ["Apple", "Banana", "Orange"];
+const [first, second] = fruits;
+console.log(first);
+console.log(second);
+console.log(fruits[2]);
+
+<!-- Rest operator with Array destructuring -->
+const numbers = [10, 20, 30, 40, 50];
+const [first, ...rest] = numbers;
+console.log(first);
+console.log(rest);
+
+<!-- spread operator -->
+Is it collecting values or spreading them?
+That's the entire difference between rest and spread
+
+const a = [1, 2, 3];
+const b = [...a];
+b.push(4);
+console.log(a);
+still prints:
+[1, 2, 3]
+because b is a copy.

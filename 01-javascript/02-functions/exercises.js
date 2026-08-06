@@ -88,3 +88,44 @@ const revenue = orders.reduce(
   0
 );
 console.log(revenue);
+
+// Destructing
+const person = {
+  name: "Jordan",
+  age: 25
+};
+const { name, age, country } = person;
+console.log(country);
+
+const student = {
+  name: "Jordan",
+  course: "Computer Science"
+};
+const {
+  name: fullName,
+  age = 22,
+  course
+} = student;
+console.log(fullName);
+console.log(age);
+console.log(course);
+
+// Array destructuring
+
+
+// spread operator
+const first = [1, 2];
+const second = [3, 4];
+const combined = [...first, ...second];
+console.log(combined);
+
+const user = {
+  name: "Jordan",
+  age: 25
+};
+const updatedUser = {
+  ...user,
+  country: "Nigeria"
+};
+console.log(user);
+console.log(updatedUser);
