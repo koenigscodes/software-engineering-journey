@@ -46,3 +46,36 @@ const sentence = words.reduce(
   ""
 );
 console.log(sentence);
+
+// Async JS
+console.log("A");
+setTimeout(() => {
+  console.log("B");
+}, 0);
+console.log("C");
+
+console.log("A");
+
+setTimeout(() => {
+  console.log("B");
+
+  setTimeout(() => {
+    console.log("C");
+  }, 0);
+
+  console.log("D");
+}, 0);
+
+console.log("E");
+// A callback must finish its current synchronous work before another scheduled callback can execute.
+
+Promise.resolve(10)
+  .then((num) => {
+    return num + 5;
+  })
+  .then((result) => {
+    return result * 2;
+  })
+  .then((finalResult) => {
+    console.log(finalResult);
+  });

@@ -168,3 +168,207 @@ console.log(a);
 still prints:
 [1, 2, 3]
 because b is a copy.
+
+<!-- spreading object -->
+Notice the pattern?
+
+For arrays:
+const newArray = [...oldArray, newItem];
+For objects:
+const newObject = {
+  ...oldObject,
+  newProperty: value
+};
+Same operator.
+Same idea.
+Create a new value while keeping the existing contents.
+
+<!-- Async JS -->
+Whenever you see:
+setTimeout(callback, 0);
+don't think: "Run this immediately."
+Think:
+"Run this later, after the current synchronous work is finished."
+
+That's a very important distinction.
+
+Rule 1:
+Synchronous code runs before asynchronous callbacks
+console.log("A");
+setTimeout(() => {
+  console.log("B");
+}, 0);
+console.log("C");
+
+Output:
+A
+C
+B
+
+Rule 2:
+Among timers that are ready, the callback whose timer becomes ready first gets a chance to execute first.
+That's why:
+setTimeout(..., 1000); // "2"
+setTimeout(..., 0);    // "3"
+produces:
+3
+2
+
+<!-- Promise -->
+Promise callbacks get priority over timer callbacks once the current synchronous code finishes.
+Synchronous code
+↓
+Microtasks (Promises)
+↓
+Tasks / timer callbacks
+
+          JavaScript starts
+                │
+                ▼
+        ┌───────────────┐
+        │ Synchronous   │
+        │     code      │
+        └───────┬───────┘
+                │
+                ▼
+        ┌───────────────┐
+        │ Microtasks    │
+        │  Promise.then │
+        └───────┬───────┘
+                │
+                ▼
+        ┌───────────────┐
+        │ Tasks         │
+        │ setTimeout    │
+        └───────────────┘
+
+        A JavaScript Promise can be in one of the three states;
+        Pending
+         ↓
+       ┌───────────┐
+       ▼           ▼
+      Fulfilled   Rejected
+
+const promise = new Promise((resolve, reject) => {
+  resolve("Success!");
+});
+
+resolve() means: "The operation succeeded, and here's the result."
+So this Promise becomes:
+fulfilled
+   ↓
+"Success!"
+
+We can retrieve that result using .then():
+promise.then((result) => {
+  console.log(result);
+});
+Output: Success!
+.then() doesn't exactly "retrieve" the value from the Promise like accessing a property. It registers a callback that will receive the fulfilled value when the Promise fulfills.
+
+const promise = new Promise((resolve, reject) => {
+  resolve("Hello Jordan");
+});
+
+There are three important things here.
+
+1. new Promise(...)
+Creates a Promise.
+Initially, conceptually:
+Promise
+   ↓
+Pending
+2. resolve("Hello Jordan")
+This changes the Promise to:
+Pending
+   ↓
+Fulfilled
+   ↓
+"Hello Jordan"
+The value "Hello Jordan" becomes the fulfillment value.
+
+3. .then()
+promise.then((result) => {
+  console.log(result);
+});
+
+The callback receives:
+result
+   ↓
+"Hello Jordan"
+
+So:
+resolve("Hello Jordan")
+          ↓
+    Promise fulfills
+          ↓
+      .then(...)
+          ↓
+result = "Hello Jordan"
+
+
+const promise = new Promise((resolve, reject) => {
+  reject("Something went wrong!");
+});
+Now the Promise becomes:
+Pending
+   ↓
+Rejected
+   ↓
+"Something went wrong!"
+To handle the rejection, we use .catch():
+promise
+  .then((result) => {
+    console.log(result);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+If the Promise fulfills: then() runs
+If it rejects: catch() runs
+
+<!-- promise chaining -->
+Promise.resolve(10)
+  .then((num) => {
+    return num + 5;
+  })
+  .then((result) => {
+    return result * 2;
+  })
+  .then((finalResult) => {
+    console.log(finalResult);
+  });
+
+
+  Whenever you see:
+promise
+  .then((value) => {
+    return something;
+  })
+  .then((value) => {
+    return somethingElse;
+  })
+  .then((value) => {
+    // ...
+  });
+Think:
+Promise
+  ↓
+value
+  ↓
+.then()
+  ↓
+return new value
+  ↓
+new Promise
+  ↓
+.then()
+  ↓
+return another value
+  ↓
+new Promise
+
+Each .then() passes its returned value to the next .then().
+
+A catch() can recover from an error and continue the Promise chain.
+That's a very important concept because real API requests can fail, and you often want to handle the failure and then decide what should happen next.

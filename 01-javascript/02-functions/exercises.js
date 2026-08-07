@@ -129,3 +129,43 @@ const updatedUser = {
 };
 console.log(user);
 console.log(updatedUser);
+
+// Async code
+console.log("Start");
+setTimeout(() => {
+  console.log("Timeout");
+}, 0);
+Promise.resolve().then(() => {
+  console.log("Promise");
+});
+console.log("End");
+// Promise()
+const promise = new Promise((resolve, reject) => {
+  resolve("Hello Jordan");
+});
+promise.then((result) => {
+  console.log(result);
+});
+
+
+const promise = new Promise((resolve, reject) => {
+  reject("Failed!");
+});
+promise
+  .then((result) => {
+    console.log("Success:", result);
+  })
+  .catch((error) => {
+    console.log("Error:", error);
+  });
+  console.log("Start");
+
+const promise = new Promise((resolve) => {
+  setTimeout(() => {
+    resolve("Finished!");
+  }, 2000);
+});
+promise.then((result) => {
+  console.log(result);
+});
+console.log("End");
