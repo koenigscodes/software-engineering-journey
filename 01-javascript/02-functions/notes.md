@@ -372,3 +372,89 @@ Each .then() passes its returned value to the next .then().
 
 A catch() can recover from an error and continue the Promise chain.
 That's a very important concept because real API requests can fail, and you often want to handle the failure and then decide what should happen next.
+
+<!-- Async/ Await-->
+An async function always wraps its returned value in a Promise.
+
+async function greet() {
+  const name = await getName();
+  console.log(name);
+}
+
+
+Promise style
+getName().then((name) => {
+  console.log(name);
+});
+Async/await style
+async function greet() {
+  const name = await getName();
+  console.log(name);
+}
+Both are working with the same Promise.
+async/await is essentially a cleaner way of writing asynchronous Promise-based code.
+await can only be used in an appropriate asynchronous context, such as an async function (with some modern JavaScript exceptions involving top-level await in modules).
+
+With async/await, we commonly handle errors using:
+try {
+  // code that might fail
+} catch (error) {
+  // handle the error
+}
+
+
+So this:
+try {
+  const data = await getData();
+  console.log(data);
+} catch (error) {
+  console.log("Error:", error);
+}
+is conceptually similar to:
+
+getData()
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.log("Error:", error);
+  });
+The big advantage is that with async/await, asynchronous code often reads much more naturally.
+
+<!-- Api requests -->
+async function getData() {
+  const data = await something();
+}
+// But where does something() usually come from?
+// An API request.
+// That's where fetch() comes in.
+const response = await fetch("https://example.com");
+// fetch() returns a Promise
+
+#await doesn't give us the Promise itself.
+It gives us the fulfilled value of the Promise.
+response.json() itself returns a Promise.
+
+fetch("/user")
+      ↓
+   Promise
+      ↓
+    await
+      ↓
+Response object
+      ↓
+response.json()
+      ↓
+   Promise
+      ↓
+    await
+      ↓
+Parsed JavaScript data
+      ↓
+   return user
+      ↓
+getUser()
+      ↓
+   Promise
+      ↓
+   user data

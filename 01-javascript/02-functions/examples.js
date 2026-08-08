@@ -79,3 +79,57 @@ Promise.resolve(10)
   .then((finalResult) => {
     console.log(finalResult);
   });
+
+  // Async/Await
+  async function greet() {
+  const name = await getName();
+  console.log(name);
+}
+
+function getName() {
+  return Promise.resolve("Jordan");
+}
+async function greet() {
+  const name = await getName();
+  console.log(name);
+}
+greet();
+
+
+async function getNumber() {
+  return 10;
+}
+async function calculate() {
+  const number = await getNumber();
+
+  console.log(number * 2);
+}
+calculate();
+console.log("Done");
+
+// With async/await, we commonly handle errors using:
+// try {
+//   // code that might fail
+// } catch (error) {
+//   // handle the error
+// }
+
+
+// But where does something() usually come from?
+// An API request.
+// That's where fetch() comes in.
+async function getData() {
+  const data = await something();
+}
+const response = await fetch("https://example.com");
+// fetch() returns a Promise.
+
+async function getUsers() {
+  try {
+    const response = await fetch("/users");
+    const users = await response.json();
+    console.log(users);
+  } catch (error) {
+    console.log(error);
+  }
+}
