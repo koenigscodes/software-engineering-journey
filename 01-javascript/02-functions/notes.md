@@ -458,3 +458,8 @@ getUser()
    Promise
       ↓
    user data
+
+   Remember this:
+
+async → puts the return value inside a Promise.
+await → gets the value out of the Promise.
