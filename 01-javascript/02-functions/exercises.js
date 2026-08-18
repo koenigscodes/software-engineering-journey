@@ -169,3 +169,169 @@ promise.then((result) => {
   console.log(result);
 });
 console.log("End");
+
+// 
+async function getProducts() {
+  const response = await fetch("/products");
+
+  if (!response.ok) {
+    throw new Error(`Request failed:${response.status}`);
+  }
+
+  const products = await response.json()
+
+    return products;
+}
+
+async function analyzeProducts() {
+  const products = await getProducts();
+
+  const productNames = products.map(product => product.name)
+
+  const expensiveProduct = products.find(product => product.price > 100)
+
+  const outOfStock = products.map(product => !product.inStock)
+
+  const totalPrice = products.reduce((sum, item) => {
+    let totalPrice;
+
+    const price = item.price;
+    
+    sum =+ price
+
+    return sum
+  }, 0)
+}
+
+
+
+async function getProducts() {
+
+  try {
+    const response = await fetch("/products");
+
+    if (!response.ok) {
+      throw new Error(`Request Failed: ${response.status}`)
+    }
+
+    const products =  await response.json()
+
+    return products
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function createProduct(product) {
+  try {
+    const response = await fetch("/products", {
+      method: "POST",
+      headers: {
+        "content-Type": "application/json"
+      },
+      body: JSON.stringify(product)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Request Failed: ${response.status}`);
+    }
+
+    const newProduct = await response.json();
+
+    return newProduct;    
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const product = await createProduct({
+  name: "Iphone",
+  price: 1300, 
+  inStock: true,
+});
+
+async function analyzeProducts() {
+  try {
+    const products = await getProducts();
+
+    const productsInStock = products.filter(product => product.inStock);
+
+    const productNames = product.map(product => product.name);
+
+    const productPrice = products.find(product => product.price > 100);
+
+    const productsTotal = products.reduce((sum, item) => {
+      const itemPrice = item.price;
+      sum += itemPrice;
+
+      return sum;
+    }, 0)    
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+async function getProducts() {
+  try {
+    const response = await fetch("/products");
+
+    if (!response.ok) {
+      throw new Error(`Request Failed:${response.status}`)
+    }
+
+    const products = await response.json();
+
+    return products;
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function createProduct(product) {
+  try {
+    const response = await fetch("/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }, 
+      body: JSON.stringify(product)
+    })
+
+    if(!response.ok) {
+      throw new Error(`Request Failed:${response.status}`)
+    }
+
+    const newProduct = await response.json();
+
+    return newProduct;
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+async function updateProduct(id, product) {
+  try {
+    const response = await fetch(`/products/${id}`, {
+      method: "PATCH",
+      headers:{
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(product)
+    })
+
+    if(!response.ok) {
+      throw new Error(`Request Failed: ${response.status}`)
+    }
+
+    const updatedProduct = await response.json();
+
+    return updateProduct;
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+

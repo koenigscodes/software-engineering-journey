@@ -463,3 +463,91 @@ getUser()
 
 async → puts the return value inside a Promise.
 await → gets the value out of the Promise.
+
+<!--  -->
+By default, fetch() makes a GET request, so you don't even have to specify the method.
+It's equivalent to:
+const response = await fetch("/users", {
+  method: "GET"
+});
+
+
+<!-- Post Requests -->
+const response = await fetch("/users", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name: "Jordan",
+    age: 25
+  })
+});
+
+There are three things here:
+1. method: "POST",
+    Tells the server what kind of request we're making.
+2.  headers: {
+      "Content-Type": "application/json"
+    },
+    "The data I'm sending is JSON."
+3.  body: JSON.stringify({
+      name: "Jordan",
+      age: 25
+    }),    
+    This is the actual data we're sending.
+
+Why JSON.stringify()?
+This:
+{
+  name: "Jordan",
+  age: 25
+}
+is a JavaScript object.
+But HTTP requests commonly send JSON text.
+
+So:
+JSON.stringify({
+  name: "Jordan",
+  age: 25
+})
+converts it into:
+{"name":"Jordan","age":25}
+
+Think:
+JavaScript object
+       ↓
+JSON.stringify()
+       ↓
+JSON string
+       ↓
+HTTP request
+
+When receiving JSON, we go the other direction:
+const data = await response.json();
+So:
+Sending:
+Object → JSON.stringify() → JSON
+Receiving:
+JSON → response.json() → JavaScript object
+
+<!-- Delete Requests -->
+
+DELETE
+This is the easiest one.
+
+async function deleteProduct(id) {
+  const response = await fetch(`/products/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status}`);
+  }
+
+  return response;
+}
+
+Notice:
+method: "DELETE"
+Usually there's no body, because we're simply telling the server which resource to remove.
