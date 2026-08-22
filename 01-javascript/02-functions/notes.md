@@ -945,3 +945,290 @@ bind()
 → sets this
 → returns a new function
 → call it later
+
+
+<!-- PROTOTYPES & CLASSES -->
+
+Creating a class
+class User {
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+
+  greet() {
+    console.log(`Hello, I'm ${this.name}`);
+  }
+}
+
+Then:
+const user1 = new User("Jordan", 25);
+const user2 = new User("Alex", 30);
+
+Now:
+console.log(user1.name);
+console.log(user2.name);
+
+gives:
+Jordan
+Alex
+And:
+user1.greet();
+user2.greet();
+gives:
+Hello, I'm Jordan
+Hello, I'm Alex
+
+What does new actually do?
+When you write:
+const user1 = new User("Jordan", 25);
+
+JavaScript roughly does these things:
+1. Creates a new object
+        ↓
+2. Sets that object's prototype to User.prototype
+        ↓
+3. Calls constructor with this = new object
+        ↓
+4. constructor assigns name and age
+        ↓
+5. returns the new object
+
+So inside:
+constructor(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+this refers to the new object being created.
+That's why:
+this.name = name;
+means: new object's name = "Jordan"
+
+class Product {
+  constructor(name, price) {
+    this.name = name;
+    this.price = price;
+  }
+
+  getPrice() {
+    return this.price;
+  }
+}
+
+const laptop = new Product("Laptop", 1200);
+const phone = new Product("Phone", 800);
+
+laptop
+├── name: "Laptop"       ← own property
+└── price: 1200          ← own property
+
+        ↓ prototype
+
+Product.prototype
+└── getPrice()           ← shared method
+
+
+<!-- Inheritance with extends -->
+Now we want a special type of product: Laptop.
+Instead of rewriting everything:
+
+class Laptop {
+  constructor(name, price, ram) {
+    this.name = name;
+    this.price = price;
+    this.ram = ram;
+  }
+
+  getPrice() {
+    return this.price;
+  }
+}
+
+we can inherit from Product:
+class Laptop extends Product {
+  constructor(name, price, ram) {
+    super(name, price);
+    this.ram = ram;
+  }
+}
+
+Now:
+const laptop = new Laptop("Dell", 1200, 16);
+The laptop has:
+laptop.name     // "Dell"
+laptop.price    // 1200
+laptop.ram      // 16
+
+And it can use the inherited method:
+laptop.getPrice(); → 1200
+
+8. What's super()?
+This: super(name, price);
+calls the parent class's constructor.
+So:
+class Product {
+  constructor(name, price) {
+    this.name = name;
+    this.price = price;
+  }
+}
+
+and:
+
+class Laptop extends Product {
+  constructor(name, price, ram) {
+    super(name, price);
+    this.ram = ram;
+  }
+}
+
+means:
+Laptop constructor
+       ↓
+super(name, price)
+       ↓
+Product constructor
+       ↓
+this.name = name
+this.price = price
+       ↓
+back to Laptop
+       ↓
+this.ram = ram
+
+So super() lets the child class reuse the parent's constructor logic.
+⚠️ Important rule
+If a child class has its own constructor(), you must call:
+super(...)
+before using this.
+This is invalid:
+class Laptop extends Product {
+  constructor(name, price, ram) {
+    this.ram = ram;
+    super(name, price);
+  }
+}
+
+You need:
+
+class Laptop extends Product {
+  constructor(name, price, ram) {
+    super(name, price);
+    this.ram = ram;
+  }
+}
+
+The prototype chain becomes longer With:
+class Laptop extends Product {}
+you essentially get:
+
+laptop
+   ↓
+Laptop.prototype
+   ↓
+Product.prototype
+   ↓
+Object.prototype
+   ↓
+null
+
+So when you do:
+laptop.getPrice()
+
+JavaScript searches:
+laptop
+ ↓
+Laptop.prototype
+ ↓
+Product.prototype
+ ↓
+Found getPrice()
+That's why inheritance works.
+
+this:
+
+class Car extends Vehicle {
+  constructor(brand, model) {
+    this.model = model;
+  }
+}
+
+will throw an error similar to:
+ReferenceError: Must call super constructor in derived class before accessing 'this'
+Why?
+When you use:
+class Car extends Vehicle
+Car is a derived class.
+
+Before its constructor can use:
+'this'
+the parent constructor must initialize the object:
+super(brand);
+
+So:
+constructor(brand, model) {
+  super(brand);        // initialize parent part
+  this.model = model;  // now use this
+}
+
+Think:
+new Car("Toyota", "Camry")
+          ↓
+     Car constructor
+          ↓
+      super("Toyota")
+          ↓
+    Vehicle constructor
+          ↓
+     this.brand = Toyota
+          ↓
+    back to Car
+          ↓
+     this.model = Camry
+
+One very important distinction
+
+Removing super() does not break the prototype chain.
+This still exists:
+car
+ ↓
+Car.prototype
+ ↓
+Vehicle.prototype
+ ↓
+Object.prototype
+It's the constructor initialization that's the problem.
+
+<!-- Method overriding -->
+class Vehicle {
+  start() {
+    console.log("Vehicle starting");
+  }
+}
+
+class Car extends Vehicle {
+  start() {
+    console.log("Car starting");
+  }
+}
+
+Now:
+const car = new Car();
+car.start();
+prints:
+Car starting
+
+Even though start() exists on Vehicle.prototype. why?
+JavaScript searches from the object up the prototype chain:
+
+car
+ ↓
+Car.prototype
+ ↓
+FOUND start()
+ ↓
+STOP SEARCHING
+
+It finds the child's version first.
+This is called method overriding

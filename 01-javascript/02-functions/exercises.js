@@ -33,305 +33,349 @@ console.log(answer);
   execute(greet);
 
   // map()
-  const numbers = [2, 4, 6];
-  const result = numbers.map(num => num + 1);
-  console.log(result);
+//   const numbers = [2, 4, 6];
+//   const result = numbers.map(num => num + 1);
+//   console.log(result);
 
-  const numbers = [1, 2, 3];
-  const result = numbers.map(num => num * 10);
-  console.log(result);
+//   const numbers = [1, 2, 3];
+//   const result = numbers.map(num => num * 10);
+//   console.log(result);
 
-  const numbers = [1, 2, 3, 4, 5];
+//   const numbers = [1, 2, 3, 4, 5];
 
-const result = numbers
-  .filter(num => num % 2 === 1)
-  .map(num => num * 10);
+// const result = numbers
+//   .filter(num => num % 2 === 1)
+//   .map(num => num * 10);
 
-  console.log(result);
+//   console.log(result);
 
-  const users = [
-  { name: "Jordan", active: true },
-  { name: "Peter", active: false },
-  { name: "Mary", active: true },
-  { name: "Alex", active: false }
-];
+//   const users = [
+//   { name: "Jordan", active: true },
+//   { name: "Peter", active: false },
+//   { name: "Mary", active: true },
+//   { name: "Alex", active: false }
+// ];
 
-const result = users
-  .filter(user => user.active)
-  .map(user => user.name);
+// const result = users
+//   .filter(user => user.active)
+//   .map(user => user.name);
 
-console.log(result);
+// console.log(result);
 
-const numbers = [5, 10, 15, 20, 25];
-const result = numbers.find(num => num > 12);
-console.log(result);
+// const numbers = [5, 10, 15, 20, 25];
+// const result = numbers.find(num => num > 12);
+// console.log(result);
 
-const ages = [22, 19, 17, 25];
-const result = ages.every(age => age >= 18);
-console.log(result);
+// const ages = [22, 19, 17, 25];
+// const result = ages.every(age => age >= 18);
+// console.log(result);
 
-// reduce()
-const words = ["I", "love", "JavaScript"];
-const sentence = words.reduce(
-  (text, word) => text + " " + word,
-  ""
-);
-console.log(sentence);
+// // reduce()
+// const words = ["I", "love", "JavaScript"];
+// const sentence = words.reduce(
+//   (text, word) => text + " " + word,
+//   ""
+// );
+// console.log(sentence);
 
-const orders = [
-  { total: 100 },
-  { total: 250 },
-  { total: 75 }
-];
-const revenue = orders.reduce(
-  (sum, order) => sum + order.total,
-  0
-);
-console.log(revenue);
+// const orders = [
+//   { total: 100 },
+//   { total: 250 },
+//   { total: 75 }
+// ];
+// const revenue = orders.reduce(
+//   (sum, order) => sum + order.total,
+//   0
+// );
+// console.log(revenue);
 
-// Destructing
-const person = {
-  name: "Jordan",
-  age: 25
-};
-const { name, age, country } = person;
-console.log(country);
+// // Destructing
+// const person = {
+//   name: "Jordan",
+//   age: 25
+// };
+// const { name, age, country } = person;
+// console.log(country);
 
-const student = {
-  name: "Jordan",
-  course: "Computer Science"
-};
-const {
-  name: fullName,
-  age = 22,
-  course
-} = student;
-console.log(fullName);
-console.log(age);
-console.log(course);
+// const student = {
+//   name: "Jordan",
+//   course: "Computer Science"
+// };
+// const {
+//   name: fullName,
+//   age = 22,
+//   course
+// } = student;
+// console.log(fullName);
+// console.log(age);
+// console.log(course);
 
-// Array destructuring
-
-
-// spread operator
-const first = [1, 2];
-const second = [3, 4];
-const combined = [...first, ...second];
-console.log(combined);
-
-const user = {
-  name: "Jordan",
-  age: 25
-};
-const updatedUser = {
-  ...user,
-  country: "Nigeria"
-};
-console.log(user);
-console.log(updatedUser);
-
-// Async code
-console.log("Start");
-setTimeout(() => {
-  console.log("Timeout");
-}, 0);
-Promise.resolve().then(() => {
-  console.log("Promise");
-});
-console.log("End");
-// Promise()
-const promise = new Promise((resolve, reject) => {
-  resolve("Hello Jordan");
-});
-promise.then((result) => {
-  console.log(result);
-});
+// // Array destructuring
 
 
-const promise = new Promise((resolve, reject) => {
-  reject("Failed!");
-});
-promise
-  .then((result) => {
-    console.log("Success:", result);
-  })
-  .catch((error) => {
-    console.log("Error:", error);
-  });
-  console.log("Start");
+// // spread operator
+// const first = [1, 2];
+// const second = [3, 4];
+// const combined = [...first, ...second];
+// console.log(combined);
 
-const promise = new Promise((resolve) => {
-  setTimeout(() => {
-    resolve("Finished!");
-  }, 2000);
-});
-promise.then((result) => {
-  console.log(result);
-});
-console.log("End");
+// const user = {
+//   name: "Jordan",
+//   age: 25
+// };
+// const updatedUser = {
+//   ...user,
+//   country: "Nigeria"
+// };
+// console.log(user);
+// console.log(updatedUser);
 
-// 
-async function getProducts() {
-  const response = await fetch("/products");
+// // Async code
+// console.log("Start");
+// setTimeout(() => {
+//   console.log("Timeout");
+// }, 0);
+// Promise.resolve().then(() => {
+//   console.log("Promise");
+// });
+// console.log("End");
+// // Promise()
+// const promise = new Promise((resolve, reject) => {
+//   resolve("Hello Jordan");
+// });
+// promise.then((result) => {
+//   console.log(result);
+// });
 
-  if (!response.ok) {
-    throw new Error(`Request failed:${response.status}`);
-  }
 
-  const products = await response.json()
+// const promise = new Promise((resolve, reject) => {
+//   reject("Failed!");
+// });
+// promise
+//   .then((result) => {
+//     console.log("Success:", result);
+//   })
+//   .catch((error) => {
+//     console.log("Error:", error);
+//   });
+//   console.log("Start");
 
-    return products;
-}
+// const promise = new Promise((resolve) => {
+//   setTimeout(() => {
+//     resolve("Finished!");
+//   }, 2000);
+// });
+// promise.then((result) => {
+//   console.log(result);
+// });
+// console.log("End");
 
-async function analyzeProducts() {
-  const products = await getProducts();
+// // 
+// async function getProducts() {
+//   const response = await fetch("/products");
 
-  const productNames = products.map(product => product.name)
+//   if (!response.ok) {
+//     throw new Error(`Request failed:${response.status}`);
+//   }
 
-  const expensiveProduct = products.find(product => product.price > 100)
+//   const products = await response.json()
 
-  const outOfStock = products.map(product => !product.inStock)
+//     return products;
+// }
 
-  const totalPrice = products.reduce((sum, item) => {
-    let totalPrice;
+// async function analyzeProducts() {
+//   const products = await getProducts();
 
-    const price = item.price;
+//   const productNames = products.map(product => product.name)
+
+//   const expensiveProduct = products.find(product => product.price > 100)
+
+//   const outOfStock = products.map(product => !product.inStock)
+
+//   const totalPrice = products.reduce((sum, item) => {
+//     let totalPrice;
+
+//     const price = item.price;
     
-    sum =+ price
+//     sum =+ price
 
-    return sum
-  }, 0)
-}
-
-
-
-async function getProducts() {
-
-  try {
-    const response = await fetch("/products");
-
-    if (!response.ok) {
-      throw new Error(`Request Failed: ${response.status}`)
-    }
-
-    const products =  await response.json()
-
-    return products
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-async function createProduct(product) {
-  try {
-    const response = await fetch("/products", {
-      method: "POST",
-      headers: {
-        "content-Type": "application/json"
-      },
-      body: JSON.stringify(product)
-    });
-
-    if (!response.ok) {
-      throw new Error(`Request Failed: ${response.status}`);
-    }
-
-    const newProduct = await response.json();
-
-    return newProduct;    
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const product = await createProduct({
-  name: "Iphone",
-  price: 1300, 
-  inStock: true,
-});
-
-async function analyzeProducts() {
-  try {
-    const products = await getProducts();
-
-    const productsInStock = products.filter(product => product.inStock);
-
-    const productNames = product.map(product => product.name);
-
-    const productPrice = products.find(product => product.price > 100);
-
-    const productsTotal = products.reduce((sum, item) => {
-      const itemPrice = item.price;
-      sum += itemPrice;
-
-      return sum;
-    }, 0)    
-  } catch (error) {
-    console.log(error)
-  }
-}
+//     return sum
+//   }, 0)
+// }
 
 
-async function getProducts() {
-  try {
-    const response = await fetch("/products");
 
-    if (!response.ok) {
-      throw new Error(`Request Failed:${response.status}`)
-    }
+// async function getProducts() {
 
-    const products = await response.json();
+//   try {
+//     const response = await fetch("/products");
 
-    return products;
+//     if (!response.ok) {
+//       throw new Error(`Request Failed: ${response.status}`)
+//     }
 
-  } catch (error) {
-    console.log(error)
-  }
-}
+//     const products =  await response.json()
 
-async function createProduct(product) {
-  try {
-    const response = await fetch("/products", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      }, 
-      body: JSON.stringify(product)
-    })
+//     return products
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
-    if(!response.ok) {
-      throw new Error(`Request Failed:${response.status}`)
-    }
+// async function createProduct(product) {
+//   try {
+//     const response = await fetch("/products", {
+//       method: "POST",
+//       headers: {
+//         "content-Type": "application/json"
+//       },
+//       body: JSON.stringify(product)
+//     });
 
-    const newProduct = await response.json();
+//     if (!response.ok) {
+//       throw new Error(`Request Failed: ${response.status}`);
+//     }
 
-    return newProduct;
+//     const newProduct = await response.json();
 
-  } catch (error) {
-    console.log(error)
-  }
-}
+//     return newProduct;    
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
 
-async function updateProduct(id, product) {
-  try {
-    const response = await fetch(`/products/${id}`, {
-      method: "PATCH",
-      headers:{
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(product)
-    })
+// const product = await createProduct({
+//   name: "Iphone",
+//   price: 1300, 
+//   inStock: true,
+// });
 
-    if(!response.ok) {
-      throw new Error(`Request Failed: ${response.status}`)
-    }
+// async function analyzeProducts() {
+//   try {
+//     const products = await getProducts();
 
-    const updatedProduct = await response.json();
+//     const productsInStock = products.filter(product => product.inStock);
 
-    return updateProduct;
+//     const productNames = product.map(product => product.name);
+
+//     const productPrice = products.find(product => product.price > 100);
+
+//     const productsTotal = products.reduce((sum, item) => {
+//       const itemPrice = item.price;
+//       sum += itemPrice;
+
+//       return sum;
+//     }, 0)    
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+
+// async function getProducts() {
+//   try {
+//     const response = await fetch("/products");
+
+//     if (!response.ok) {
+//       throw new Error(`Request Failed:${response.status}`)
+//     }
+
+//     const products = await response.json();
+
+//     return products;
+
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+// async function createProduct(product) {
+//   try {
+//     const response = await fetch("/products", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json"
+//       }, 
+//       body: JSON.stringify(product)
+//     })
+
+//     if(!response.ok) {
+//       throw new Error(`Request Failed:${response.status}`)
+//     }
+
+//     const newProduct = await response.json();
+
+//     return newProduct;
+
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+// async function updateProduct(id, product) {
+//   try {
+//     const response = await fetch(`/products/${id}`, {
+//       method: "PATCH",
+//       headers:{
+//         "Content-Type": "application/json"
+//       },
+//       body: JSON.stringify(product)
+//     })
+
+//     if(!response.ok) {
+//       throw new Error(`Request Failed: ${response.status}`)
+//     }
+
+//     const updatedProduct = await response.json();
+
+//     return updateProduct;
     
-  } catch (error) {
-    console.log(error)
+//   } catch (error) {
+//     console.log(error)
+//   }
+// }
+
+// class Product {
+//   constructor(name, price) {
+//     this.name = name;
+//     this.price = price;
+//   }
+
+//   getPrice() {
+//     return this.price;
+//   }
+// }
+
+// const laptop = new Product("Laptop", 1200);
+// const phone = new Product("Phone", 800);
+
+
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  function increment() {
+    setCount(prevCount => prevCount + 1);
   }
+
+  function decrement() {
+    setCount(count - 1);
+  }
+
+  return (
+    <div>
+      <h1>{count}</h1>
+
+      <button onClick={increment}>
+        +
+      </button>
+
+      <button onClick={decrement}>
+        -
+      </button>
+    </div>
+  );
 }
 
+export default Counter;
