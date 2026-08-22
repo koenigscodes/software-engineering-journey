@@ -532,7 +532,6 @@ Receiving:
 JSON → response.json() → JavaScript object
 
 <!-- Delete Requests -->
-
 DELETE
 This is the easiest one.
 
@@ -551,3 +550,398 @@ async function deleteProduct(id) {
 Notice:
 method: "DELETE"
 Usually there's no body, because we're simply telling the server which resource to remove.
+
+<!-- Put -->
+PUT generally means:
+
+Replace/update the resource with the data you're sending.
+Example:
+
+async function updateProduct(id, product) {
+  const response = await fetch(`/products/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(product)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status}`);
+  }
+
+  const updatedProduct = await response.json();
+
+  return updatedProduct;
+}
+
+Usage:
+await updateProduct(1, {
+  name: "Gaming Laptop",
+  price: 1500,
+  inStock: true
+});
+
+
+<!-- Promise.all() -->
+What's happening here?
+Look carefully:
+const [users, products] = await Promise.all([
+  getUsers(),
+  getProducts()
+]);
+
+First:
+getUsers()
+returns a Promise.
+And:
+getProducts()
+also returns a Promise.
+So we have:
+Promise ──→ users
+Promise ──→ products
+
+Promise.all() takes those Promises:
+Promise.all([
+  getUsers(),
+  getProducts()
+])
+
+and returns one Promise that fulfills when all of them have fulfilled.
+Then:
+await
+gets the resulting array.
+So conceptually:
+
+getUsers()       → Promise ─┐
+                            ├→ Promise.all() → Promise → await → array
+getProducts()    → Promise ─┘
+
+The result is:
+[
+  users,
+  products
+]
+
+//But don't use Promise.all() blindly//
+
+Consider:
+const user = await getUser();
+const orders = await getOrders(user.id);
+
+Here, you can't necessarily do:
+Promise.all([
+  getUser(),
+  getOrders(user.id)
+]);
+
+because you don't know user.id until getUser() finishes.
+That's a dependency:
+
+getUser()
+   ↓
+user.id
+   ↓
+getOrders(user.id)
+So sequential await is appropriate.
+Whereas:
+getUsers()   ──┐
+getProducts() ──┼── independent
+getOrders()  ──┘
+is perfect for Promise.all().
+
+
+One more Promise method
+There's another useful one:
+Promise.allSettled()
+The difference is:
+Promise.all()
+"I need ALL of these to succeed."
+If one rejects → combined Promise rejects.
+Promise.allSettled()
+"Run ALL of these and tell me what happened to each one."
+
+Even if some fail, it waits for all of them.
+For example:
+const results = await Promise.allSettled([
+  getUsers(),
+  getProducts(),
+  getOrders()
+]);
+
+You might get:
+[
+  { status: "fulfilled", value: "Users" },
+  { status: "rejected", reason: "Products failed" },
+  { status: "fulfilled", value: "Orders" }
+]
+Notice something familiar?
+Each result has a status.
+
+
+//One last Promise method: Promise.race()//
+This one is simpler
+
+const result = await Promise.race([
+  getUsers(),
+  getProducts(),
+  getOrders()
+]);
+
+Promise.race() means:
+"Give me whichever Promise settles first."
+Important word: settles.
+
+That means either:
+fulfills ✅
+rejects ❌
+Example
+getUsers()     → 3s → "Users"
+getProducts()  → 1.5s → "Products"
+getOrders()    → 2s → "Orders"
+
+Then:
+await Promise.race([...])
+settles after 1.5 seconds with:
+"Products"
+But if the fastest one rejects:
+
+getUsers()     → 3s → "Users"
+getProducts()  → 1s → ❌ "Products failed"
+getOrders()    → 2s → "Orders"
+then Promise.race() rejects after 1 second.
+
+Compare the three
+Method	Finishes when	If one rejects:
+Promise.all()	All fulfill	Rejects immediately
+Promise.allSettled()	All settle	Doesn't reject because of individual failures
+Promise.race()	First settles	Takes that rejection
+
+
+<!-- Javascript Modules - export & import-->
+Suppose we have:
+math.js
+
+export const add = (a, b) => {
+  return a + b;
+};
+
+export const subtract = (a, b) => {
+  return a - b;
+};
+
+Now another file can use them:
+app.js
+
+import { add, subtract } from "./math.js";
+console.log(add(10, 5));
+console.log(subtract(10, 5));
+
+import { add, subtract } from "./math.js";
+These are named imports.
+The names need to correspond to the exported names
+
+//You can also have a default export.
+math.js
+const multiply = (a, b) => {
+  return a * b;
+};
+
+export default multiply;
+
+Then:
+import multiply from "./math.js";
+
+Notice something:
+There are no {}.
+
+If you specifically want to rename a named import, JavaScript gives you as:
+
+import { getUser as user } from "./user.js";
+
+
+<!-- Closures -->
+A closure is when a function remembers and can access variables from the surrounding scope where it was created, even after that outer function has finished executing.
+
+Closures → Practical JavaScript
+One of the most common uses of closures is creating private state.
+Consider:
+
+function createBankAccount(initialBalance) {
+  let balance = initialBalance;
+  return {
+    deposit(amount) {
+      balance += amount;
+    },
+    getBalance() {
+      return balance;
+    }
+  };
+}
+
+Now:
+const account = createBankAccount(1000);
+account.deposit(500);
+console.log(account.getBalance());
+
+<!-- HIGHER ORDER FUNCTIONS -->
+A higher-order function is a function that either:
+takes another function as an argument, or
+returns a function.
+
+function createMultiplier(number) {
+  return function (value) {
+    return value * number;
+  };
+}
+
+//Explanation:
+createMultiplier(2)
+       │
+       │ number = 2
+       ↓
+returns function(value)
+       │
+       │ remembers number = 2
+       ↓
+double(5)
+       │
+       │ value = 5
+       ↓
+5 × 2
+  ↓
+10
+
+
+<!-- this in JavaScript -->
+For a normal function, this is determined by how the function is called.
+
+const user = {
+  name: "Jordan",
+  greet() {
+    console.log(this.name);
+  }
+};
+user.greet();
+
+const user = {
+  name: "Jordan",
+  greet: () => {
+    console.log(this.name);
+  }
+};
+
+An arrow function doesn't create its own this. arrow functions don't have their own this.
+It gets this from its surrounding lexical scope.
+That's why you generally shouldn't use an arrow function for an object method when you expect this to refer to the object.
+The arrow function doesn't create its own this. It takes this from its surrounding scope, which is not the user object.
+So:
+this.name → undefined
+
+const user = {
+  name: "Jordan",
+
+  greet() {
+    setTimeout(() => {
+      console.log(this.name);
+    }, 1000);
+  }
+};
+user.greet();
+The arrow function doesn't create its own this.
+
+It inherits this from greet():
+
+user.greet()
+     ↓
+this = user
+     ↓
+arrow function
+     ↓
+inherits this
+     ↓
+this = user
+     ↓
+this.name = Jordan
+
+Normal function
+→ gets its own `this`
+Arrow function
+→ inherits `this` from surrounding scope
+
+mental shortcut;
+For normal functions:
+"How was I called?"
+For arrow functions:
+"Where was I created?"
+That's an excellent rule of thumb.
+
+
+<!-- bind, call, and apply -->
+
+call()
+The syntax is:
+function.call(object, arg1, arg2, ...);
+For example:
+const user = {
+  name: "Jordan"
+};
+
+function introduce(age, job) {
+  console.log(this.name, age, job);
+}
+
+introduce.call(user, 25, "Developer");
+Output:
+Jordan 25 Developer
+
+call():
+Sets this to the object you provide.
+Immediately calls the function.
+Passes additional arguments individually.
+
+apply():
+ does almost the same thing:
+introduce.apply(user, [25, "Developer"]);
+Output:
+Jordan 25 Developer
+
+The difference is how the arguments are supplied:
+call()
+→ individual arguments
+apply()
+→ arguments in an array
+
+bind():
+This one is different.
+
+const userGreet = greet.bind(user);
+
+It doesn't call greet() immediately
+Instead, it creates a new function with this permanently set to user.
+Then:
+userGreet();
+prints:
+Jordan
+Think:
+call()
+→ set this + call NOW
+apply()
+→ set this + call NOW
+bind()
+→ set this + create a new function for LATER
+
+call()
+→ sets this
+→ calls immediately
+→ arguments individually
+
+apply()
+→ sets this
+→ calls immediately
+→ arguments in an array
+
+bind()
+→ sets this
+→ returns a new function
+→ call it later
