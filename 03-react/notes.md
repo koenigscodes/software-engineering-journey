@@ -346,7 +346,6 @@ useEffect(() => {
 }, []);
 
 Notice what's happened.
-
 Your React component no longer cares about:
 
 fetch("/users")
@@ -364,7 +363,6 @@ That's now the responsibility of the API function.
 3. Think about the responsibilities
 
 We now have:
-
 users.js
 "How do I communicate with the users API?"
 Users.jsx
@@ -374,5 +372,41 @@ Users.jsx
 "Is the list empty?"
 
 That's separation of concerns.
-
 And this becomes extremely important as your project grows.
+
+
+<!-- Deleting a user -->
+The flow we want is:
+
+User clicks Delete
+        ↓
+handleDelete(id)
+        ↓
+deleteUser(id)
+        ↓
+DELETE /users/id
+        ↓
+Server confirms deletion
+        ↓
+Remove user from React state
+        ↓
+UI updates immediately
+1. API function
+
+Inside your api/users.js, add:
+
+export async function deleteUser(id) {
+  const response = await fetch(`/users/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request Failed: ${response.status}`);
+  }
+}
+
+Notice that with a typical DELETE request, we don't necessarily need:
+
+return response.json();
+
+The important thing for us here is that the request succeeded.

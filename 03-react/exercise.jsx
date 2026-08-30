@@ -179,7 +179,7 @@ function Users() {
 
 // Separation of concerns
 
-function getUsers() {
+async function getUsers() {
   const response = await fetch("/users")
 
   if (!response.ok) {
@@ -189,11 +189,39 @@ function getUsers() {
   return response.json();
 }
 
+async function updateUser (id, updates) {
+  const response = await fetch(`/users/${id}`, {
+    method: "PATCH",
 
-import { getUsers } from "../api/users";
+    headers: {
+      "content-type": "application/json"
+    },
+
+    body: JSON.stringify(updates)
+  })
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function deleteUser(id) {
+  const response = await fetch(`/users/${id}`, {
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request Failed: ${response.status}`);
+  }
+}
+
+
+import { getUsers, deleteUser } from "../api/users";
 import { useState, useEffect } from "react"
 
-function users() {
+function Users() {
   const [users, setUsers] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -235,6 +263,118 @@ function users() {
           <div key={user.id}>
             <h2>{user.name}</h2>
             <p>{user.role}</p>
+          </div>
+        )) 
+      }
+    </div>
+  )
+}
+
+
+function Users() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    async function loadUsers() {
+      try {
+        const data = await getUsers();
+
+        setUsers(data)
+      } catch (error) {
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadUsers();
+  }, []);
+
+  async function  handleSubmit(event) {
+    event.preventDefault();
+    
+    try {
+      const newUser = await createUser({name, role});
+
+      setUsers(prevUsers => [...prevUsers, newUser])
+      setName("");
+      setRole("");
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  async function handleDelete(id) {
+    try {
+      await deleteUser(id);
+      
+      setUsers(prevUsers => 
+        prevUsers.filter(user => user.id !== id)
+      );
+    } catch (error) {
+      setError(error.message)
+    }
+  }
+
+  async function handleUpdateUser(id, updates) {
+    try {
+      const updatedUser = await updateUser(id, updates);
+
+      setUsers(prevUsers => 
+        prevUsers.map(user => 
+          user.id === id ? updatedUser : user
+        )
+      )
+    } catch (error) {
+     setError(error.message) 
+    }
+  }
+
+  if (loading) {
+    return <p>Loading users</p>
+  }
+
+  if (error) {
+    return <p>{error}</p>
+  }
+
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input 
+          value={name}
+          onChange={event => setName(event.target.value)}
+        />
+        <input
+          value={role}
+          onChange={event => setRole(event.target.value)}
+        />
+        <button
+          type="submit"
+        >Submit</button>
+      </form>
+      {
+        users.length === 0
+        ? 
+        <p>No users found</p>
+        :
+        users.map(user => (
+          <div key={user.id}>
+            <h2>{user.name}</h2>
+            <p>{user.role}</p>
+            <button onClick={() => handleDelete(user.id)}>
+              delete
+            </button>
+            <button onClick={() => handleUpdateUser(user.id, {
+              role: "Senior Developer"
+            })}>
+              promote
+            </button>
           </div>
         )) 
       }
