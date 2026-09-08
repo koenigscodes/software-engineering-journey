@@ -410,3 +410,7 @@ Notice that with a typical DELETE request, we don't necessarily need:
 return response.json();
 
 The important thing for us here is that the request succeeded.
+
+
+<!-- What is a custom hook? -->
+A custom hook is simply a function that uses React hooks.
