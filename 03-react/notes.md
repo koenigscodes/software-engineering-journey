@@ -414,3 +414,330 @@ The important thing for us here is that the request succeeded.
 
 <!-- What is a custom hook? -->
 A custom hook is simply a function that uses React hooks.
+
+
+
+
+If three components independently call useUsers():
+Users.jsx       → fetch users
+AdminUsers.jsx  → fetch users
+UserStats.jsx   → fetch users
+
+you could end up making the same API request multiple times. That's inefficient.
+But imagine something more important:
+
+Users.jsx
+   ↓
+users = [Jordan, Alex]
+
+Then AdminUsers.jsx deletes Alex:
+AdminUsers.jsx
+   ↓
+users = [Jordan]
+
+But Users.jsx still has:
+users = [Jordan, Alex]
+
+Now you have two different versions of the truth inside the same application. 😬
+That's the deeper problem.
+This leads to a fundamental engineering concept:
+Single source of truth.
+
+For data that needs to be shared across multiple parts of an application, we generally want one authoritative place where that state lives.
+And this is where Redux starts becoming relevant.
+
+If Users, AdminUsers, and UserStats all need the same users data, what would you ideally want them to read from?
+
+Client state → state your application itself needs to manage.
+Is the sidebar open?
+Which user is selected?
+Is a modal open?
+What is currently typed into a form?
+Server state → data your application fetches from and synchronizes with a server.
+Users
+Orders
+Products
+Messages
+
+The key phrase is source of truth.
+
+
+                        <!-- REDUX -->
+
+Redux gives us a centralized store where shared client/application state can live.
+
+But remember our other distinction:
+Client state  → Redux can manage
+Server state  → RTK Query is designed to manage
+
+The flow is:
+Component
+    │
+    │ dispatch(action)
+    ↓
+  Action
+    │
+    ↓
+ Reducer
+    │
+    │ calculates the new state
+    ↓
+  Store
+    │
+    ↓
+ Components re-render
+
+For example:
+dispatch({ type: "sidebarOpened" });
+
+The action only says:
+“The sidebar was opened.”
+
+The reducer might define:
+if (action.type === "sidebarOpened") {
+  return {
+    ...state,
+    sidebarOpen: true
+  };
+}
+
+So remember this mental model:
+Actions describe. Reducers decide. Store holds. Components request.
+
+                        Action vs Action Creator
+  An action is the actual object describing what happened:
+{
+  type: "ui/sidebarOpened"
+}
+
+An action creator is a function that creates that action:
+sidebarOpened()
+dispatch(sidebarOpened());
+the flow is:
+
+sidebarOpened()
+      ↓
+creates an action object
+      ↓
+dispatch(action)
+      ↓
+Redux receives it
+      ↓
+matching reducer runs
+
+Redux Toolkit's createSlice conveniently generates those action creators for us from the reducer names.
+
+So:
+reducers: {
+  sidebarOpened(state) {
+    state.sidebarOpen = true;
+  }
+}
+
+gives us an action creator we can use as:
+dispatch(sidebarOpened());
+
+reducers: {
+  toggleSidebar(state) {
+    state.sidebarOpen = !state.sidebarOpen;
+  }
+}
+
+dispatch(toggleSidebar()) sends the action created by toggleSidebar() to Redux. Redux then runs the relevant reducer, which performs the state transition.
+
+So we now have the complete chain:
+
+toggleSidebar()
+      ↓
+Action creator
+      ↓
+creates an action
+      ↓
+dispatch(action)
+      ↓
+Redux Store
+      ↓
+Reducer
+      ↓
+State changes
+      ↓
+React re-renders
+
+                    Creating a Slice
+
+Conceptually, a slice needs three things:
+UI Slice
+├── name
+├── initialState
+└── reducers
+
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const uiSlice = createSlice({
+  name: "ui",
+
+  initialState: {
+    sidebarOpen: false
+  },
+
+  reducers: {
+    toggleSidebar(state) {
+      state.sidebarOpen = !state.sidebarOpen;
+    }
+  }
+});
+
+export const { toggleSidebar } = uiSlice.actions;
+
+export default uiSlice.reducer;
+
+The action creator is what the component needs:
+import { toggleSidebar } from "./uiSlice";
+dispatch(toggleSidebar());
+It creates the action that gets sent into Redux.
+
+Now the other export:
+export default uiSlice.reducer;
+is needed by the Redux store.
+
+Think of the two exports as having different jobs:
+toggleSidebar
+     ↓
+Component needs it
+     ↓
+dispatch(toggleSidebar())
+
+while:
+uiSlice.reducer
+     ↓
+Store needs it
+     ↓
+"Here's the logic for handling UI actions"
+
+So:
+Action creator → used by components to dispatch actions.
+Reducer → registered with the store so Redux knows how to update that slice of state.
+
+reducer: {
+  ui: uiReducer
+}
+The ui on the left becomes the key in our Redux state.
+So eventually our state will look conceptually like:
+
+{
+  ui: {
+    sidebarOpen: false
+  }
+}
+That's important because later we'll access it with a selector:
+            <!-- UseSelector -->
+The React-Redux hook for reading state is:
+useSelector()
+const sidebarOpen = useSelector(state => state.ui.sidebarOpen);
+
+useSelector(...)
+      ↓
+gets the Redux state
+      ↓
+state.ui
+      ↓
+state.ui.sidebarOpen
+      ↓
+false.
+useSelector doesn't change the state. It only reads a value from the store.
+
+One important thing to notice
+The state parameter isn't something you created yourself. React-Redux passes the current Redux state into your selector function.
+
+So:
+useSelector(state => state.users.selectedUser)
+
+means:
+"Give me the current Redux state, and from that state, I want users.selectedUser."
+
+useSelector → read Redux state
+useDispatch → tell Redux something happened
+
+Component
+   ↓
+dispatch(action)
+   ↓
+Redux Store
+   ↓
+Reducer
+   ↓
+State changes
+   ↓
+Component re-renders
+
+
+dispatch(toggleSidebar());
+There are actually two things happening here:
+
+1. toggleSidebar()
+This calls the action creator.
+Remember:
+export const { toggleSidebar } = uiSlice.actions;
+Calling it creates an action object that describes what happened.
+
+Conceptually:
+toggleSidebar()
+produces something like:
+
+{
+  type: "ui/toggleSidebar"
+}
+
+2. dispatch(...)
+Then dispatch sends that action to the Redux store:
+dispatch(toggleSidebar());
+Redux receives it and essentially says:
+"Okay, I have an action saying ui/toggleSidebar. Which reducer handles that?"
+
+Your uiSlice reducer handles it:
+
+toggleSidebar(state) {
+  state.sidebarOpen = !state.sidebarOpen;
+}
+
+so then:
+dispatch(toggleSidebar())
+        ↓
+Redux store updates state
+        ↓
+useSelector notices the selected value changed
+        ↓
+React-Redux tells React the component needs to update
+        ↓
+React re-renders the component
+        ↓
+UI reflects the new state
+
+So useSelector isn't just a one-time read. It subscribes the component to the part of the Redux state that it selected.
+
+For example:
+
+const sidebarOpen = useSelector(
+  state => state.ui.sidebarOpen
+);
+
+If sidebarOpen changes:
+
+false → true
+
+the component using that selector gets updated.
+
+But here's an important optimization you'll want to understand:
+
+If some other part of Redux changes, like:
+
+state.orders.filter
+
+your component selecting only:
+
+state.ui.sidebarOpen
+
+doesn't need to re-render because of that unrelated change.
+
+That's one of the useful things useSelector handles for you.
