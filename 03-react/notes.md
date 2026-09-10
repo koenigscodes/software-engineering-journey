@@ -741,3 +741,28 @@ state.ui.sidebarOpen
 doesn't need to re-render because of that unrelated change.
 
 That's one of the useful things useSelector handles for you.
+
+finally thisis the mental model:
+Provider
+   ↓
+makes store available
+
+useSelector
+   ↓
+reads/subscribes to state
+
+useDispatch
+   ↓
+sends actions
+
+Reducer
+   ↓
+decides how state changes
+
+Store
+   ↓
+holds the state
+
+React
+   ↓
+updates the UI
