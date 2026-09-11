@@ -766,3 +766,95 @@ holds the state
 React
    ↓
 updates the UI
+
+              <!-- Payload -->
+We might eventually have an action like:
+selectUser(42)
+
+That action would need to carry the 42 with it.
+So we'd get something conceptually like:
+
+{
+  type: "users/selectUser",
+  payload: 42
+}
+
+That payload is simply the data the action carries along with it.
+
+
+For example:
+dispatch(selectUser(42));
+
+could create:
+{
+  type: "users/selectUser",
+  payload: 42
+}
+
+Then the reducer can use that payload:
+selectUser(state, action) {
+  state.selectedUser = action.payload;
+}
+
+Component
+   │
+   │ dispatch(selectUser(42))
+   ↓
+Action
+   │
+   ├── type: "users/selectUser"
+   └── payload: 42
+          ↓
+       Reducer
+          ↓
+ selectedUser = 42
+
+dispatch(selectUser(42));
+
+creates something conceptually like:
+
+{
+  type: "users/selectUser",
+  payload: 42
+}
+
+Then Redux gives the current state and the action to the reducer:
+
+selectUser(state, action) {
+  state.selectedUser = action.payload;
+}
+
+So the full picture is:
+Component
+   │
+   │ dispatch(selectUser(42))
+   ↓
+Action
+ ┌───────────────┐
+ │ type          │
+ │ payload: 42   │
+ └───────────────┘
+        ↓
+     Reducer
+   state + action
+        ↓
+   updated state
+Payload carries the information the reducer needs to perform the requested state change.
+And payload doesn't have to be an ID. It can be anything the reducer needs:
+
+dispatch(setFilter("delivered"));
+dispatch(selectUser(42));
+dispatch(setTheme("dark"));
+dispatch(setSearchTerm("Jordan")); 
+
+
+Action = what happened + any information needed about it.
+State = the data Redux currently holds.
+Reducer = receives both state and action, then determines the new state.
+And importantly, not every action needs a payload.
+
+
+understand the three key ideas:
+RTK reducers can use mutation-looking syntax.
+Immer handles the immutable update internally.
+Only the parts that actually change are updated; unchanged data stays unchanged.
