@@ -825,3 +825,52 @@ And:
 </Card>
 works.
 
+//  typing forms and controlled inputs
+
+Suppose we have:
+
+function SearchBox() {
+  const [search, setSearch] = useState("");
+
+  return (
+    <input
+      value={search}
+      onChange={(event) => setSearch(event.target.value)}
+    />
+  );
+}
+
+User types
+   ↓
+onChange fires
+   ↓
+event.target.value
+   ↓
+setSearch(...)
+   ↓
+state changes
+   ↓
+input re-renders
+
+And because this is an <input>, TypeScript knows the event is:
+
+React.ChangeEvent<HTMLInputElement>
+
+So if we extract the handler:
+
+function SearchBox() {
+  const [search, setSearch] = useState("");
+
+  function handleChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    setSearch(event.target.value);
+  }
+
+  return (
+    <input
+      value={search}
+      onChange={handleChange}
+    />
+  );
+}
