@@ -874,3 +874,11 @@ function SearchBox() {
     />
   );
 }
+
+
+Suppose we have:
+
+const [form, setForm] = useState<LoginForm>({
+  email: "",
+  password: "",
+});
